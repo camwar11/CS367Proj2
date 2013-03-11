@@ -48,16 +48,19 @@ public class Cake {
         glu.gluLookAt( lookAts[sceneNum][0], lookAts[sceneNum][1], lookAts[sceneNum][2], //eye position x,y,z
                         lookAts[sceneNum][3], lookAts[sceneNum][4], lookAts[sceneNum][5], //focus x,y,z
                         lookAts[sceneNum][6], lookAts[sceneNum][7], lookAts[sceneNum][8]);//camera up x,y,z
+        
+        //gl2.glEnable (GL2.GL_LIGHTING);
+        gl2.glEnable (GL2.GL_NORMALIZE);
           
     }
      
     protected static void init(GL2 gl2){
         //setup the 4 look at positions
         lookAts = new double[4][9];
-        lookAts[0] = new double[]{0,30,30,0,0,0,0,0,1};
-        lookAts[1] = new double[]{10,24,4,0,0,0,0,0,1};
-        lookAts[2] = new double[]{0,0,30,0,0,0,0,1,0};
-        lookAts[3] = new double[]{100,-50,10,0,0,0,0,0,1};
+        lookAts[0] = new double[]{0,80,80,0,0,0,0,0,1};
+        lookAts[1] = new double[]{50,35,15,0,0,0,0,0,1};
+        lookAts[2] = new double[]{0,0,90,0,0,0,0,1,0};
+        lookAts[3] = new double[]{100,-200,20,0,0,0,0,0,1};
         
         //A Timer is used to calculate the movement between points that we are at for smooth animation
         int delay = 100; //milliseconds
@@ -144,6 +147,37 @@ public class Cake {
         gl2.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
         gl2.glPopMatrix();
     }
+        public static void globalRotate(GL2 gl2, float degrees, float[] matrix, Triple<Float> axis){
+        gl2.glPushMatrix();
+        gl2.glLoadIdentity();
+        gl2.glRotatef(degrees, axis.X(), axis.Y(), axis.Z());
+        gl2.glMultMatrixf(matrix, 0);
+        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
+        gl2.glPopMatrix();
+    }
+    public static void globalTranslate(GL2 gl2,float[] matrix, Triple<Float> translation){
+        gl2.glPushMatrix();
+        gl2.glLoadIdentity();
+        gl2.glTranslatef(translation.X(), translation.Y(), translation.Z());
+        gl2.glMultMatrixf(matrix, 0);
+         gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
+        gl2.glPopMatrix();
+    }
+    public static void localRotate(GL2 gl2, float degrees, float[] matrix, Triple<Float> axis){
+        gl2.glPushMatrix();
+        gl2.glLoadMatrixf(matrix, 0);
+        gl2.glRotatef(degrees, axis.X(), axis.Y(), axis.Z());
+         gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
+        gl2.glPopMatrix();
+    }
+    public static void localTranslate(GL2 gl2,float[] matrix, Triple<Float> translation){
+        gl2.glPushMatrix();
+        gl2.glLoadMatrixf(matrix,0);
+        gl2.glTranslatef(translation.X(), translation.Y(), translation.Z());
+        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
+        gl2.glPopMatrix();
+    }
+    
     private static float findRadius(float z, float R){
         //find the radii by using the pythagorean theorem
         float zDist = Math.abs(R - z);

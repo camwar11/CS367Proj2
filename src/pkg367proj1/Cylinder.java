@@ -13,9 +13,8 @@ import javax.vecmath.Matrix4f;
  *
  * @author warnecam
  */
-public class Cylinder implements Drawable{
+public class Cylinder extends SceneObj{
     private int listID;
-    private Matrix4f cf;
     public Cylinder(GL2 gl, float r, float h, Triple<Float> color){
         cf = new Matrix4f();
         cf.setIdentity();
@@ -57,21 +56,6 @@ public class Cylinder implements Drawable{
         glu.gluCylinder(cyl, r, r, h, 20, 20);
         gl.glEnd();
         gl.glEndList();
-    }
-    public Matrix4f getCFMat(){
-        return cf;
-    }
-    
-    public float[] getCFf(){
-        float[] mat = new float[16];
-        for(int i =0; i < 4; i++){
-            float[] row = new float[4];
-            cf.getRow(i, row);
-            for(int j = 0; j<4; j++){
-                mat[(i*4)+j] = row[j];
-            }
-        }
-        return mat;
     }
     public void draw(GL2 gl){
         gl.glPushMatrix();

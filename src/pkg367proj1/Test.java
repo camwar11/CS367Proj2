@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 /**
@@ -22,7 +23,10 @@ import javax.media.opengl.GL2;
  */
 public class Test {
         static Cylinder cyl;
+        static Teapots teapots;
         public static void main( String [] args ) {
+        teapots = new Teapots();
+        
         GLProfile glprofile = GLProfile.getDefault();
         GLCapabilities glcapabilities = new GLCapabilities( glprofile );
         final GLCanvas glcanvas = new GLCanvas( glcapabilities );
@@ -66,14 +70,20 @@ public class Test {
             public void reshape( GLAutoDrawable glautodrawable, int x, int y, int width, int height ) {
                 Cake.setup( glautodrawable.getGL().getGL2(), width, height );
                 cyl.draw(glautodrawable.getGL().getGL2());
+                teapots.draw(glautodrawable.getGL().getGL2());
             }
             
             @Override
             public void init( GLAutoDrawable glautodrawable ) {
-                Cake.init(glautodrawable.getGL().getGL2());
+                GL2 gl2 = glautodrawable.getGL().getGL2();
+                Cake.init(gl2);
                 //CubeSide2.init(glautodrawable.getGL().getGL2());
-                cyl = new Cylinder(glautodrawable.getGL().getGL2(), 10, 1, new Triple(1f,1f,1f));
-                cyl.draw(glautodrawable.getGL().getGL2());
+                cyl = new Cylinder(gl2, 50, 4, new Triple(1f,0.4f,0.4f));
+                cyl.draw(gl2);
+                teapots.add(new Teapot(10.0, new Triple(0f,.5f,0.8f)));
+                teapots.get(0).rotateZ(20f);
+                teapots.get(0).localTranslate(gl2, new Triple<Float>(0f,35f,2f));
+                teapots.draw(gl2);
             }
             
             
@@ -86,6 +96,7 @@ public class Test {
                 Cake.render( glautodrawable.getGL().getGL2());
                 //CubeSide2.render( glautodrawable.getGL().getGL2());
                 cyl.draw(glautodrawable.getGL().getGL2());
+                teapots.draw(glautodrawable.getGL().getGL2());
             }
         });
 
