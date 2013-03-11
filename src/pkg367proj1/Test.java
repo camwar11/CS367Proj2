@@ -21,10 +21,12 @@ import javax.media.opengl.GL2;
  * @author warnecam
  */
 public class Test {
+        static Cylinder cyl;
         public static void main( String [] args ) {
         GLProfile glprofile = GLProfile.getDefault();
         GLCapabilities glcapabilities = new GLCapabilities( glprofile );
         final GLCanvas glcanvas = new GLCanvas( glcapabilities );
+        Cake.glcanvas = glcanvas;
         glcanvas.addKeyListener(new KeyListener(){
 
                 @Override
@@ -63,12 +65,15 @@ public class Test {
             @Override
             public void reshape( GLAutoDrawable glautodrawable, int x, int y, int width, int height ) {
                 Cake.setup( glautodrawable.getGL().getGL2(), width, height );
+                cyl.draw(glautodrawable.getGL().getGL2());
             }
             
             @Override
             public void init( GLAutoDrawable glautodrawable ) {
                 Cake.init(glautodrawable.getGL().getGL2());
-                CubeSide2.init(glautodrawable.getGL().getGL2());
+                //CubeSide2.init(glautodrawable.getGL().getGL2());
+                cyl = new Cylinder(glautodrawable.getGL().getGL2(), 10, 1, new Triple(1f,1f,1f));
+                cyl.draw(glautodrawable.getGL().getGL2());
             }
             
             
@@ -79,7 +84,8 @@ public class Test {
             @Override
             public void display( GLAutoDrawable glautodrawable ) {
                 Cake.render( glautodrawable.getGL().getGL2());
-                CubeSide2.render( glautodrawable.getGL().getGL2());
+                //CubeSide2.render( glautodrawable.getGL().getGL2());
+                cyl.draw(glautodrawable.getGL().getGL2());
             }
         });
 
