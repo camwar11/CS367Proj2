@@ -5,8 +5,8 @@
 package pkg367proj1;
 
 import com.jogamp.opengl.util.gl2.GLUT;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
+import javax.media.opengl.*;
+//import javax.media.opengl.glu.GLU;
 import javax.vecmath.Matrix4f;
 
 /**
@@ -31,6 +31,21 @@ public class Teapot extends SceneObj{
         gl.glColor3f(color.R(), color.G(), color.B());
         glut.glutSolidTeapot(size,false);
         gl.glPopMatrix();
+    }
+    
+    
+    public static void initMaterial(GL2 gl){
+        /* define material properties */
+        float[] material_ambient = new float[]{0.053750f, 0.050000f, 0.066250f, 0.820000f};//{0.25f, 0.25f, 0.25f};
+        float[] material_diffuse = new float[]{0.182750f, 0.170000f, 0.225250f, 0.820000f};//{0.90f, 0.90f, 0.90f, 0};
+        float[] material_specular = new float[]{0.332741f, 0.328634f, 0.346435f, 0.820000f};//{0.90f, 0.90f, 0.90f, 0};
+        float material_shininess = 25.0f;
+
+        /* load material properties */
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, material_ambient, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, material_diffuse, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, material_specular, 0);
+        gl.glMaterialf(GL2.GL_FRONT, GL2.GL_SHININESS, material_shininess);
     }
     
 }
