@@ -26,7 +26,8 @@ public class Teapot extends SceneObj{
     @Override
     public void draw(GL2 gl){
         gl.glPushMatrix();
-        gl.glMultMatrixf(getCFf(), 0);
+        gl.glMultMatrixf(Test.cyl.getCFf(), 0);
+        gl.glMultMatrixf(this.getCFf(), 0);
         GLUT glut = new GLUT();
         gl.glColor3f(color.R(), color.G(), color.B());
         glut.glutSolidTeapot(size,false);

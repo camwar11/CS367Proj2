@@ -5,7 +5,9 @@
 package pkg367proj1;
 
 import javax.media.opengl.GL2;
+import javax.vecmath.Matrix4d;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 /**
  *
@@ -22,13 +24,19 @@ public class SceneObj implements Drawable{
     }
     
     public void rotateX(float rot){
-        cf.rotX(rot);
+        Matrix4f rotMat = new Matrix4f();
+        rotMat.rotX(rot);
+        cf.mul(rotMat,cf);
     }
     public void rotateY(float rot){
-        cf.rotY(rot);
+        Matrix4f rotMat = new Matrix4f();
+        rotMat.rotY(rot);
+        cf.mul(rotMat,cf);
     }
     public void rotateZ(float rot){
-        cf.rotZ(rot);
+        Matrix4f rotMat = new Matrix4f();
+        rotMat.rotZ(rot);
+        cf.mul(rotMat,cf);
     }
     
     void globalTranslate(GL2 gl2, Triple<Float> translation) {
@@ -46,20 +54,27 @@ public class SceneObj implements Drawable{
         gl2.glPopMatrix();
     }
     void localTranslate(GL2 gl2, Triple<Float> translation) {
-        gl2.glPushMatrix();
-        gl2.glLoadMatrixf(this.getCFf(),0);
-        gl2.glTranslatef(translation.X(), translation.Y(), translation.Z());
-        
-        float[] savedMat = new float[16];
-        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, savedMat, 0);
-        
-        cf = new Matrix4f(savedMat);
-        gl2.glPopMatrix();
+        double[] matrix = new double[16];
+        float[] coords = this.getCFf();
+        for(int i = 0; i < 16;i++){
+            matrix[i] = Double.valueOf(coords[i]);
+        }
+        Cake.globalTranslate(gl2, matrix, translation);
+        cf = new Matrix4f(new Matrix4d(matrix));
     }
     
-        public Matrix4f getCFMat(){
+    void localTranslate(float xDir) {
+        Vector3f trans = new Vector3f(xDir, 0, 0);
+        Matrix4f transMat = new Matrix4f();
+        
+        transMat.set(trans);
+        cf.add(transMat);
+    }
+    
+    public Matrix4f getCFMat(){
         return cf;
     }
+        
     
     public float[] getCFf(){
         float[] mat = new float[16];

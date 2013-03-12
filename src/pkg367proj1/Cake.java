@@ -35,8 +35,17 @@ public class Cake {
     static double camY;
     static double camZ;
     static GLCanvas glcanvas;
+    static int time;
+    static float timeFactor;
+    static GL2 myGL;
+    static boolean increasingSpeed = true;
+    public static boolean rotating = true;
     
     protected static void setup( GL2 gl2, int width, int height ) {
+        myGL = gl2;
+        time = 0;
+        timeFactor = .002f;
+        
         gl2.glViewport( 0, 0, width, height );
         gl2.glMatrixMode( GL2.GL_PROJECTION );
         gl2.glEnable(GL.GL_DEPTH_TEST);
@@ -452,8 +461,6 @@ public class Cake {
             camZ = ((camZ-lookAts[prevSceneNum][8])/20*movePos) + lookAts[prevSceneNum][8];
             movePos++;
             
-            //update the graphics as we move
-            glcanvas.display();
             if(movePos == 21){
                 prevSceneNum = sceneNum;
                 movePos = 0;
@@ -461,6 +468,25 @@ public class Cake {
                 
             
         }
+        if(rotating) {
+            rotateScene(time * timeFactor);
+            if (increasingSpeed) {
+                time++;
+            } else {
+                time--;
+            }
+
+            if (time % 100 == 0) {
+                increasingSpeed = !increasingSpeed;
+            }
+        }
+        //update the graphics as we move
+        glcanvas.display();
         
+    }
+
+    private static void rotateScene(float f) {
+        Test.cyl.rotateZ(f);
+        Test.teapots.rotateZ(f);
     }
 }
