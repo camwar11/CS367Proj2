@@ -139,7 +139,7 @@ public class Test {
             }
         });
 
-        Frame frame = new Frame("Portal Scene");
+        Frame frame = new Frame("Teapot Scene");
         frame.add(glcanvas);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowevent) {
