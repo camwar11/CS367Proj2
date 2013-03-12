@@ -27,6 +27,8 @@ import javax.media.opengl.GL2;
 public class Test {
 
     static Cylinder cyl;
+    static boolean light0=true;
+    static boolean light1=true;
     static Teapots teapots;
     static GL2 myGL;
     
@@ -37,28 +39,28 @@ public class Test {
         GLProfile glprofile = GLProfile.getDefault();
         GLCapabilities glcapabilities = new GLCapabilities(glprofile);
         final GLCanvas glcanvas = new GLCanvas(glcapabilities);
-        Cake.glcanvas = glcanvas;
+        Helper.glcanvas = glcanvas;
         glcanvas.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
                 char key = e.getKeyChar();
                 System.out.println("Typed: " + key);
                 if (key == 'n') {
-                    Cake.sceneNum = (Cake.sceneNum + 1) % 4;
-                    System.out.println("Next Scene: " + Cake.sceneNum);
+                    Helper.sceneNum = (Helper.sceneNum + 1) % 4;
+                    System.out.println("Next Scene: " + Helper.sceneNum);
                 } else if (key == 'p') {
-                    if (Cake.sceneNum == 0) {
-                        Cake.sceneNum = 4;
+                    if (Helper.sceneNum == 0) {
+                        Helper.sceneNum = 4;
                     }
-                    Cake.sceneNum = (Cake.sceneNum - 1) % 4;
-                    System.out.println("Prev Scene: " + Cake.sceneNum);
+                    Helper.sceneNum = (Helper.sceneNum - 1) % 4;
+                    System.out.println("Prev Scene: " + Helper.sceneNum);
                 } else if (key == 'f') {
-                    if(Cake.fillMode==GL2.GL_FILL)
-                        Cake.fillMode = GL2.GL_LINE;
+                    if(Helper.fillMode==GL2.GL_FILL)
+                        Helper.fillMode = GL2.GL_LINE;
                     else
-                        Cake.fillMode = GL2.GL_FILL;
+                        Helper.fillMode = GL2.GL_FILL;
                 } else if(key == 'w'){
-                  cyl.localTranslate(1f);
+                  //cyl.localTranslate(1f);
                 } else if(key == 'a'){
                   cyl.rotateX(1f);
                 } else if(key == 's'){
@@ -66,26 +68,35 @@ public class Test {
                 } else if(key == 'd'){
                   cyl.rotateX(-1f);
                 } else if(key == 'q'){
-                    Cake.rotating = !Cake.rotating; 
+                    Helper.rotating = !Helper.rotating; 
                 } else if(key == 'e'){
                     cyl.moving = !cyl.moving;
-                }
+                }else if(key == 'k'){
+                        light0=true;
+                    }else if(key == 'l'){
+                       light0=false;
+                    }else if(key == 'h'){
+                        light1=true;
+                    }else if(key == 'j'){
+                       light1=false;
+                    }
                 
                 glcanvas.display();
+            }
+
+
+            @Override
+            public void keyReleased(KeyEvent e) {
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
             }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
         });
         glcanvas.addGLEventListener(new GLEventListener() {
             @Override
             public void reshape(GLAutoDrawable glautodrawable, int x, int y, int width, int height) {
-                Cake.setup(glautodrawable.getGL().getGL2(), width, height);
+                Helper.setup(glautodrawable.getGL().getGL2(), width, height);
                 cyl.draw(glautodrawable.getGL().getGL2());
                 teapots.draw(glautodrawable.getGL().getGL2());
             }
@@ -94,11 +105,13 @@ public class Test {
             public void init(GLAutoDrawable glautodrawable) {
                 GL2 gl2 = glautodrawable.getGL().getGL2();
                 myGL = gl2;
-                Cake.init(gl2);
+                Helper.init(gl2);
                 //CubeSide2.init(glautodrawable.getGL().getGL2());
                 cyl = new Cylinder(gl2, 50, 4, new Triple(1f, 0.4f, 0.4f));
                 cyl.draw(gl2);
                 initTeapots(gl2);
+                Teapot.initMaterial(gl2);
+                initLights(gl2);
                 teapots.draw(gl2);
             }
 
@@ -107,10 +120,20 @@ public class Test {
             }
 
             @Override
-            public void display(GLAutoDrawable glautodrawable) {
-                Cake.render(glautodrawable.getGL().getGL2());
-                //CubeSide2.render( glautodrawable.getGL().getGL2());
-               // GLUT glut = 
+            public void display( GLAutoDrawable glautodrawable ) {
+                if (light0 == false) {
+                    glautodrawable.getGL().getGL2().glDisable(GL2.GL_LIGHT0);
+                }
+                if (light1 == false) {
+                    glautodrawable.getGL().getGL2().glDisable(GL2.GL_LIGHT1);
+                }
+                if (light0 == true) {
+                    glautodrawable.getGL().getGL2().glEnable(GL2.GL_LIGHT0);
+                }
+                if (light1 == true) {
+                    glautodrawable.getGL().getGL2().glEnable(GL2.GL_LIGHT1);
+                }
+                Helper.render( glautodrawable.getGL().getGL2());
                 cyl.draw(glautodrawable.getGL().getGL2());
                 teapots.draw(glautodrawable.getGL().getGL2());
             }
@@ -151,4 +174,24 @@ public class Test {
         
         
     }
+        
+    public static void initLights(GL2 gl) {
+        /* define light properties */
+        float light0_diffuse[] = {1.0f, 0.0f, 0.0f, 1.0f};
+        float light0_position[] = {-1.0f, 0.0f, 1.0f, 0.0f};
+        float light1_diffuse[] = {0.0f, 0.0f, 1.0f, 1.0f};
+        float light1_position[] = {1.0f, 0.0f, 1.0f, 0.0f};
+
+        /* enable lights 0 and 1*/
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHT0);
+        gl.glEnable(GL2.GL_LIGHT1);
+
+        /* load light properties */
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, light0_diffuse, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, light0_position, 0);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, light1_diffuse, 0);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, light1_position, 0);
+    }
+
 }

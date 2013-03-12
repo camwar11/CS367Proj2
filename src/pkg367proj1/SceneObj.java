@@ -59,7 +59,7 @@ public class SceneObj implements Drawable{
         for(int i = 0; i < 16;i++){
             matrix[i] = Double.valueOf(coords[i]);
         }
-        Cake.globalTranslate(gl2, matrix, translation);
+        Helper.globalTranslate(gl2, matrix, translation);
         cf = new Matrix4f(new Matrix4d(matrix));
     }
     
